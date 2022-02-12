@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  mongodb_container:
+    image: mongo:latest
+    container_name: mongodb_container
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: aro
+      MONGO_INITDB_ROOT_PASSWORD: aro
+    ports:
+      - 27017:27017
+    volumes:
+      - ./database/:/data/db
