@@ -4,9 +4,35 @@ services:
     image: mongo:latest
     container_name: mongodb_container
     environment:
-      MONGO_INITDB_ROOT_USERNAME: aro
-      MONGO_INITDB_ROOT_PASSWORD: aro
+      - MONGO_INITDB_ROOT_USERNAME=aro
+      - MONGO_INITDB_ROOT_PASSWORD=aro
     ports:
       - 27017:27017
     volumes:
       - ./database/:/data/db
+    networks:
+      - mongodb_network
+  
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongodb-express
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb_container
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=aro
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=aro
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin
+    depends_on:
+      - mongodb_container
+    networks:
+      - mongodb_network
+    ports:
+      - 8081:8081
+    volumes:
+      - ./database/
+    restart: unless-stopped
+
+networks:
+  mongodb_network:
+    name: mongodb_network
